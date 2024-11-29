@@ -1,9 +1,11 @@
 const mysql = require('../database/db');
 
-const getProducts = async (req, res, next) => {
+const getAllProducts = async (req, res, next) => {
     try {
+        const limit = req.params.limit
+        const offset = req.params.offset
         const products = await mysql.execute(
-            'SELECT * FROM myshopdb.ProductTbl pt'
+            `SELECT * FROM myshopdb.ProductTbl pt LIMIT ${limit} OFFSET ${offset}`
         );
         res.status(200).send(products[0]);
     } catch (error) {
@@ -15,17 +17,18 @@ const searchProducts = async (req, res, next) => {
     try {
         const cateId = req.params.cateId
         const proName = req.params.proName
-        
+        const limit = req.params.limit
+        const offset = req.params.offset
         if(proName == undefined){
             
             const products = await mysql.execute(
-                `SELECT * FROM myshopdb.ProductTbl pt WHERE pt.cate_id = ${cateId} `
+                `SELECT * FROM myshopdb.ProductTbl pt WHERE pt.cate_id = ${cateId} LIMIT ${limit} OFFSET ${offset}`
             );
             res.status(200).send(products[0]);
         }else{
             
             const products = await mysql.execute(
-                `SELECT * FROM myshopdb.ProductTbl pt WHERE pt.cate_id = ${cateId} AND pt.product_name LIKE '%${proName}%' `
+                `SELECT * FROM myshopdb.ProductTbl pt WHERE pt.cate_id = ${cateId} AND pt.product_name LIKE '%${proName}%' LIMIT ${limit} OFFSET ${offset}`
             );
             res.status(200).send(products[0]);
         }
@@ -105,4 +108,4 @@ const getBestSaleProduct = async (req, res, next) => {
 }
 
 
-module.exports = {getProducts, searchProducts, updateProducts, addProduct , getOutOfStockProduct, getBestSaleProduct}
+module.exports = {getAllProducts, searchProducts, updateProducts, addProduct , getOutOfStockProduct, getBestSaleProduct}
