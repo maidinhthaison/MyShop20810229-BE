@@ -1,13 +1,42 @@
 const mysql = require('../database/db');
 
-const getAllProducts = async (req, res, next) => {
+const getProducts = async (req, res, next) => {
     try {
+        const cateId = req.params.cateId
+        const proName = req.params.proName
         const limit = req.params.limit
         const offset = req.params.offset
-        const products = await mysql.execute(
-            `SELECT * FROM myshopdb.ProductTbl pt LIMIT ${limit} OFFSET ${offset}`
-        );
-        res.status(200).send(products[0]);
+        console.log(`${cateId} - ${proName} - ${limit} - ${offset}`);
+
+        if(!cateId && !proName){
+            console.log('cateId', cateId);
+            
+            const products = await mysql.execute(
+                `SELECT * FROM myshopdb.ProductTbl pt LIMIT ${limit} OFFSET ${offset}`
+            );
+            res.status(200).send(products[0]);
+        }
+        if(cateId && !proName){
+            console.log(isNaN(cateId));
+            if(isNaN(cateId)){
+                const products = await mysql.execute(
+                        `SELECT * FROM myshopdb.ProductTbl pt WHERE pt.product_name LIKE '%${cateId}%' LIMIT ${limit} OFFSET ${offset}`
+                );
+                res.status(200).send(products[0]);
+            }else{
+                const products = await mysql.execute(
+                        `SELECT * FROM myshopdb.ProductTbl pt WHERE pt.cate_id = ${cateId} AND pt.product_name LIKE '%%'  LIMIT ${limit} OFFSET ${offset}`);
+                res.status(200).send(products[0]);
+            }
+        }
+        if(cateId && proName){
+        
+            const products = await mysql.execute(
+                `SELECT * FROM myshopdb.ProductTbl pt WHERE pt.cate_id = ${cateId} AND pt.product_name LIKE '%${proName}%' LIMIT ${limit} OFFSET ${offset}`
+            );
+            res.status(200).send(products[0]);
+        }
+            
     } catch (error) {
         res.status(400).send(error.message);
     }
@@ -108,4 +137,4 @@ const getBestSaleProduct = async (req, res, next) => {
 }
 
 
-module.exports = {getAllProducts, searchProducts, updateProducts, addProduct , getOutOfStockProduct, getBestSaleProduct}
+module.exports = {getProducts, searchProducts, updateProducts, addProduct , getOutOfStockProduct, getBestSaleProduct}
