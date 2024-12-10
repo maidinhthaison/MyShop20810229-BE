@@ -6,6 +6,8 @@ const getProducts = async (req, res, next) => {
         const proName = req.params.proName
         const limit = req.params.limit
         const offset = req.params.offset
+        console.log("qweqwe");
+        
         console.log(`${cateId} - ${proName} - ${limit} - ${offset}`);
 
         if(!cateId && !proName){

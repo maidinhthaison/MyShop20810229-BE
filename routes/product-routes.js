@@ -9,8 +9,8 @@ router.get("/products/cate/:cateId/pro/:proName/:limit/:offset", searchProducts)
 router.get("/products/cate/:cateId/pro/:limit/:offset", searchProducts);
 router.post("/products/:id", updateProducts);
 router.post("/products", addProduct);
-router.get("/products/outofstock/:limit", getOutOfStockProduct);
-router.get("/products/bestsale/:limit", getBestSaleProduct);
+router.get("/outofstock/:limit", getOutOfStockProduct);
+router.get("/bestsale/:limit", getBestSaleProduct);
 
 
 module.exports = {routes: router};
